@@ -1,17 +1,20 @@
-# pbb_produk_bawaan
+Flutter List Product
 
-A new Flutter project.
+Aplikasi Flutter untuk menampilkan daftar produk menggunakan API dari "DummyJSON Products" (https://dummyjson.com/docs/products).
 
-## Getting Started
+Fitur
 
-This project is a starting point for a Flutter application.
+- Menampilkan daftar produk.
+- Mencari produk melalui fitur search.
+- Melihat detail produk dengan memilih produk dari halaman utama.
+- Tampilan menggunakan skema warna pastel.
 
-A few resources to get you started if this is your first Flutter project:
+Teknologi
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter
+- Dart
+- DummyJSON Products API
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Demo Aplikasi
+
+Video demo: [..link YouTube..]
