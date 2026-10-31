@@ -17,4 +17,4 @@ Teknologi
 
 Demo Aplikasi
 
-Video demo: [..link YouTube..]
+Video demo: [https://youtu.be/eeaX4QPQOKw?si=jJwMAjngNhkA3HDt]
