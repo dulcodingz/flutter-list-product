@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'models/product_model.dart';
 import 'providers/product_provider.dart';
+import 'screens/product_form_screen.dart';
 import 'services/api_services_products.dart';
 
 const Color pastelBg = Color(0xFFF3F4F6);
@@ -87,6 +88,14 @@ class _ProductListPageState extends State<ProductListPage> {
     final provider = context.watch<ProductProvider>();
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final ok = await Navigator.of(context).push<bool>(
+              MaterialPageRoute(builder: (_) => const ProductFormScreen()));
+          if (ok == true && mounted) context.read<ProductProvider>().fetchProducts();
+        },
+        child: const Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: const Text(
           'Products',
@@ -161,11 +170,70 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
+  void _showActions(Product product) {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ListTile(
+            leading: const Icon(Icons.edit),
+            title: const Text('Edit'),
+            onTap: () async {
+              Navigator.pop(ctx);
+              final ok = await Navigator.of(context).push<bool>(MaterialPageRoute(
+                  builder: (_) => ProductFormScreen(product: product)));
+              if (ok == true && mounted) context.read<ProductProvider>().fetchProducts();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete, color: Colors.red),
+            title: const Text('Hapus'),
+            onTap: () async {
+              Navigator.pop(ctx);
+              final yes = await showDialog<bool>(
+                context: context,
+                builder: (d) => AlertDialog(
+                  title: const Text('Hapus produk?'),
+                  content: Text(product.title),
+                  actions: [
+                    TextButton(onPressed: () => Navigator.pop(d, false), child: const Text('Batal')),
+                    TextButton(onPressed: () => Navigator.pop(d, true), child: const Text('Hapus')),
+                  ],
+                ),
+              );
+              if (yes == true && mounted) {
+                final prov = context.read<ProductProvider>();
+                final ok = await prov.deleteProduct(product.id);
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(ok ? 'Produk dihapus' : (prov.error ?? 'Gagal menghapus'))));
+              }
+            },
+          ),
+        ]),
+      ),
+    );
+  }
+
   Widget _buildProductContent(ProductProvider provider) {
     if (provider.loading && provider.products.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
+    if (provider.error != null && provider.products.isEmpty) {
+      return Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(provider.error!, textAlign: TextAlign.center),
+          ),
+          ElevatedButton(
+            onPressed: () => context.read<ProductProvider>().fetchProducts(),
+            child: const Text('Coba lagi'),
+          ),
+        ]),
+      );
+    }
     if (provider.products.isEmpty) {
       return const Center(
         child: Text('Produk tidak ditemukan 😕'),
@@ -193,6 +261,7 @@ class _ProductListPageState extends State<ProductListPage> {
           return InkWell(
             borderRadius: BorderRadius.circular(20),
             onTap: () => context.push('/detail/${product.id}'),
+ onLongPress: () => _showActions(product),
             child: Container(
               decoration: BoxDecoration(
                 color: cardColor,

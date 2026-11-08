@@ -1,9 +1,13 @@
-﻿<?php
+<?php
 
 $host = '127.0.0.1';
 $dbname = 'app';
 $username = 'app';
-$password = 'app_secret';
+$password = 'GANTI_DI_credentials.local.php';
+if (file_exists(__DIR__ . '/credentials.local.php')) {
+    $c = require __DIR__ . '/credentials.local.php';
+    $password = $c['password'] ?? $password;
+}
 
 try {
     $pdo = new PDO(
