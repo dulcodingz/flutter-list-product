@@ -28,7 +28,10 @@ class ApiServiceProducts {
   }
 
   // Petakan baris backend -> bentuk yang dipahami Product.fromJson
-  static Map<String, dynamic> _fix(dynamic row) {
+  static Map<String, dynamic> _fix(dynamic row) =>
+      jsonDecode(jsonEncode(_fix0(row))) as Map<String, dynamic>;
+
+  static Map<String, dynamic> _fix0(dynamic row) {
     final r = Map<String, dynamic>.from(row as Map);
     final minQty = _i(r['minimum_order_quantity']);
     return {
